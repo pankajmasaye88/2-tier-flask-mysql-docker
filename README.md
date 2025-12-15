@@ -1,57 +1,24 @@
-Flask App with MySQL Docker Setup :- \n
-This is a simple Flask app that interacts with a MySQL database. The app allows users to submit messages, which are then stored in the database and displayed on the frontend.
+# A Flask App with MySQL Docker Setup :-  
+This is a simple Flask app that interacts with a MySQL database. The app allows users to submit messages, which are then stored in the database and displayed on the frontend.  
 
-Prerequisites
-Before you begin, make sure you have the following installed:
-
-Docker
-Git (optional, for cloning the repository)
-Setup
-Clone this repository (if you haven't already):
-
-git clone https://github.com/your-username/your-repo-name.git
-Navigate to the project directory:
-
-cd your-repo-name
-Create a .env file in the project directory to store your MySQL environment variables:
-
-touch .env
-Open the .env file and add your MySQL configuration:
-
-MYSQL_HOST=mysql
-MYSQL_USER=your_username
-MYSQL_PASSWORD=your_password
-MYSQL_DB=your_database
-Usage
-Start the containers using Docker Compose:
-
-docker-compose up --build
-Access the Flask app in your web browser:
-
-Frontend: http://localhost
-Backend: http://localhost:5000
-Create the messages table in your MySQL database:
-
-Use a MySQL client or tool (e.g., phpMyAdmin) to execute the following SQL commands:
-
-CREATE TABLE messages (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    message TEXT
-);
-Interact with the app:
-
-Visit http://localhost to see the frontend. You can submit new messages using the form.
-Visit http://localhost:5000/insert_sql to insert a message directly into the messages table via an SQL query.
-Cleaning Up
-To stop and remove the Docker containers, press Ctrl+C in the terminal where the containers are running, or use the following command:
-
-docker-compose down
-To run this two-tier application using without docker-compose
-First create a docker image from Dockerfile
-docker build -t flaskapp .
-Now, make sure that you have created a network using following command
-docker network create twotier
-Attach both the containers in the same network, so that they can communicate with each other
+Major steps:
+1. Launch an AWS EC2 Ubuntu Instance
+2. Update the system 
+   - sudo apt update && sudo apt upgrade -y
+3. Install Docker 
+   - sudo apt install docker.io
+4. Give user permissions to docker 
+   - sudo usermod -aG docker $USER && newgrp docker 
+5. We have Dockerfile in the folder.
+6. Build a docker image 
+   - docker build . -t flaskapp
+7. Try to create & run the container 
+   - docker run -d -p 5000:5000 flaskapp:latest 
+8. You can see the app page on http://localhost:5000 but, database container is not running and it's not connected.
+9. Kill the current container and create new two container and connect them using docker network.
+10. To connect two containers we use docker network.  Create a docker network named twotier
+    - docker network create twotier
+11.  Attach both the containers in the same network, so that they can communicate with each other\
 i) MySQL container
 
 docker run -d \
@@ -61,7 +28,7 @@ docker run -d \
     -e MYSQL_DATABASE=mydb \
     -e MYSQL_ROOT_PASSWORD=admin \
     -p 3306:3306 \
-    mysql:5.7
+    mysql:5.7\
 ii) Backend container
 
 docker run -d \
@@ -73,7 +40,32 @@ docker run -d \
     -e MYSQL_DB=mydb \
     -p 5000:5000 \
     flaskapp:latest
-Notes
+\  
+Your MySQL configuration:  
+MYSQL_HOST=mysql  
+MYSQL_USER=your_username  
+MYSQL_PASSWORD=your_password  
+MYSQL_DB=your_database  
+
+Access Flask app in your web browser:  
+http://localhost:5000  
+  
+Create the messages table in your MySQL database:
+Access the Mysql container using :  
+- docker exec -it mysql_container_id bash  
+- mysql -u root -p
+- enter password
+- show databases;
+- use mydb;
+- now create table named messages :
+CREATE TABLE messages (  
+    id INT AUTO_INCREMENT PRIMARY KEY,  
+    message TEXT  
+);  
+- exit
+- exit
+
+Notes :-  
 Make sure to replace placeholders (e.g., your_username, your_password, your_database) with your actual MySQL configuration.
 
 This is a basic setup for demonstration purposes. In a production environment, you should follow best practices for security and performance.
