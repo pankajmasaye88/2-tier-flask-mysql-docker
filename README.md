@@ -65,6 +65,11 @@ CREATE TABLE messages (
 - exit
 - exit
 
+Push image to docker hub : \
+- docker login : login with code and approve
+- docker tag flaskapp:latest docker123pankaj/2-tier-flask-app-docker:latest
+- docker push docker123pankaj/2-tier-flask-app-docker:latest
+
 Notes :-  
 Make sure to replace placeholders (e.g., your_username, your_password, your_database) with your actual MySQL configuration.
 
